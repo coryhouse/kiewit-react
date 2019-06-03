@@ -1,25 +1,38 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
 
 function App() {
+  const courses = [
+    { id: 1, title: "Clean Coder's" },
+    { id: 2, title: "React Fundamentals" }
+  ];
+
+  // Goal: Render a table with ID and title as headers.
+  function renderTable() {
+    return (
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Title</th>
+          </tr>
+        </thead>
+        <tbody>
+          {courses.map(course => (
+            <tr>
+              <td>{course.id}</td>
+              <td>{course.title}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+  }
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <h1>Courses</h1>
+      <ul>{renderTable()}</ul>
+    </>
   );
 }
 
