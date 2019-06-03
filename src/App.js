@@ -18,7 +18,7 @@ function App() {
         </thead>
         <tbody>
           {courses.map(course => (
-            <tr>
+            <tr key={course.id}>
               <td>{course.id}</td>
               <td>{course.title}</td>
             </tr>
