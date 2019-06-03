@@ -1,13 +1,14 @@
 import React from "react";
 
-function App() {
-  const courses = [
-    { id: 1, title: "Clean Coder's" },
-    { id: 2, title: "React Fundamentals" }
-  ];
+class App extends React.Component {
+  state = {
+    courses: [
+      { id: 1, title: "Clean Code" },
+      { id: 2, title: "React Fundamentals" }
+    ]
+  };
 
-  // Goal: Render a table with ID and title as headers.
-  function renderTable() {
+  renderTable() {
     return (
       <table>
         <thead>
@@ -17,7 +18,7 @@ function App() {
           </tr>
         </thead>
         <tbody>
-          {courses.map(course => (
+          {this.state.courses.map(course => (
             <tr key={course.id}>
               <td>{course.id}</td>
               <td>{course.title}</td>
@@ -28,12 +29,14 @@ function App() {
     );
   }
 
-  return (
-    <>
-      <h1>Courses</h1>
-      <ul>{renderTable()}</ul>
-    </>
-  );
+  render() {
+    return (
+      <>
+        <h1>Courses</h1>
+        <ul>{this.renderTable()}</ul>
+      </>
+    );
+  }
 }
 
 export default App;
