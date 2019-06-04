@@ -37,12 +37,13 @@ class Courses extends React.Component {
 
   renderTable() {
     return (
-      <table>
+      <table className="table">
         <thead>
           <tr>
             <th />
             <th>ID</th>
             <th>Title</th>
+            <th>Category</th>
           </tr>
         </thead>
         <tbody>
@@ -55,6 +56,7 @@ class Courses extends React.Component {
               </td>
               <td>{course.id}</td>
               <td>{course.title}</td>
+              <td>{course.category}</td>
             </tr>
           ))}
         </tbody>
