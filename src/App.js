@@ -2,18 +2,14 @@ import React from "react";
 import Home from "./Home";
 import Nav from "./Nav";
 import Courses from "./Courses";
+import { Route } from "react-router-dom";
 
 const App = () => {
-  function getPage() {
-    const route = window.location.pathname;
-    if (route === "/courses") return <Courses />;
-    return <Home />;
-  }
-
   return (
     <>
       <Nav />
-      {getPage()}
+      <Route path="/" component={Home} exact />
+      <Route path="/courses" component={Courses} />
     </>
   );
 };
