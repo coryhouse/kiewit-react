@@ -20,21 +20,19 @@ class App extends React.Component {
       );
   }
 
-  deleteCourse(courseId) {
-    courseApi
-      .deleteCourse(courseId)
-      .then(() => {
-        const courses = this.state.courses.filter(
-          course => course.id !== courseId
-        );
-        this.setState({ courses: courses });
-      })
-      .catch(error => {
-        toast.error(
-          "🦄 Sorry, delete failed. Please reload and try again. Error: " +
-            error.message
-        );
-      });
+  async deleteCourse(courseId) {
+    try {
+      await courseApi.deleteCourse(courseId);
+      const courses = this.state.courses.filter(
+        course => course.id !== courseId
+      );
+      this.setState({ courses: courses });
+    } catch (error) {
+      toast.error(
+        "🦄 Sorry, delete failed. Please reload and try again. Error: " +
+          error.message
+      );
+    }
   }
 
   renderTable() {
