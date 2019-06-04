@@ -1,9 +1,13 @@
 import { handleResponse, handleError } from "./apiUtils";
 
-export function getCourses() {
-  return fetch("http://localhost:3001/courses")
-    .then(handleResponse)
-    .catch(handleError);
+export async function getCourses() {
+  // This line will pause until the fetch promise resolves (until the API call completes)
+  try {
+    const response = await fetch(BASE_URL + "courses");
+    return handleResponse(response);
+  } catch (error) {
+    handleError(error);
+  }
 }
 
 export function deleteCourse(courseId) {
