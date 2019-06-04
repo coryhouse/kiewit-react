@@ -8,11 +8,17 @@ class App extends React.Component {
     ]
   };
 
+  deleteCourse(courseId) {
+    const courses = this.state.courses.filter(course => course.id !== courseId);
+    this.setState({ courses: courses });
+  }
+
   renderTable() {
     return (
       <table>
         <thead>
           <tr>
+            <th />
             <th>ID</th>
             <th>Title</th>
           </tr>
@@ -20,6 +26,11 @@ class App extends React.Component {
         <tbody>
           {this.state.courses.map(course => (
             <tr key={course.id}>
+              <td>
+                <button onClick={() => this.deleteCourse(course.id)}>
+                  Delete
+                </button>
+              </td>
               <td>{course.id}</td>
               <td>{course.title}</td>
             </tr>
