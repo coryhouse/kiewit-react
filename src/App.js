@@ -1,16 +1,22 @@
 import React from "react";
+import * as courseApi from "./api/courseApi";
 
 class App extends React.Component {
   state = {
-    courses: [
-      { id: 1, title: "Clean Code" },
-      { id: 2, title: "React Fundamentals" }
-    ]
+    courses: []
   };
 
+  componentDidMount() {
+    courseApi.getCourses().then(courses => this.setState({ courses: courses }));
+  }
+
   deleteCourse(courseId) {
-    const courses = this.state.courses.filter(course => course.id !== courseId);
-    this.setState({ courses: courses });
+    courseApi.deleteCourse(courseId).then(() => {
+      const courses = this.state.courses.filter(
+        course => course.id !== courseId
+      );
+      this.setState({ courses: courses });
+    });
   }
 
   renderTable() {
