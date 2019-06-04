@@ -9,7 +9,15 @@ class App extends React.Component {
   };
 
   componentDidMount() {
-    courseApi.getCourses().then(courses => this.setState({ courses: courses }));
+    courseApi
+      .getCourses()
+      .then(courses => this.setState({ courses: courses }))
+      .catch(error =>
+        toast.error(
+          "🦄 Sorry, loading courses failed. Please try reloading the page. Error:" +
+            error.message
+        )
+      );
   }
 
   deleteCourse(courseId) {
@@ -21,9 +29,12 @@ class App extends React.Component {
         );
         this.setState({ courses: courses });
       })
-      .catch(error =>
-        toast.error("🦄 Sorry, delete failed. Please reload and try again.")
-      );
+      .catch(error => {
+        toast.error(
+          "🦄 Sorry, delete failed. Please reload and try again. Error: " +
+            error.message
+        );
+      });
   }
 
   renderTable() {
