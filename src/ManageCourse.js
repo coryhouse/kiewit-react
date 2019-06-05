@@ -1,6 +1,8 @@
 import React from "react";
 import { saveCourse } from "./api/courseApi";
 import { Redirect } from "react-router-dom";
+import PropTypes from "prop-types";
+import { course } from "./propTypes";
 
 class ManageCourse extends React.Component {
   state = {
@@ -11,6 +13,12 @@ class ManageCourse extends React.Component {
     },
     redirectToCoursesPage: false
   };
+
+  componentDidMount() {
+    // 1. Read the URL
+    // 2. If the URL has a slug, we know we're editing.
+    // 3. Get the course info
+  }
 
   handleChange = event => {
     const newCourse = { ...this.state.course };
@@ -83,5 +91,10 @@ class ManageCourse extends React.Component {
     );
   }
 }
+
+ManageCourse.propTypes = {
+  courses: PropTypes.arrayOf(course).isRequired,
+  loadCourses: PropTypes.func.isRequired
+};
 
 export default ManageCourse;

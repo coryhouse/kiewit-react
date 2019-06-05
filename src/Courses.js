@@ -1,7 +1,15 @@
 import React from "react";
+import PropTypes from "prop-types";
+import { course } from "./propTypes";
 import { Link } from "react-router-dom";
 
 class Courses extends React.Component {
+  static propTypes = {
+    courses: PropTypes.arrayOf(course).isRequired,
+    loadCourses: PropTypes.func.isRequired,
+    header: PropTypes.string.isRequired
+  };
+
   componentDidMount() {
     this.props.loadCourses();
   }
