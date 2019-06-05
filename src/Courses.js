@@ -2,6 +2,7 @@ import React from "react";
 import * as courseApi from "./api/courseApi";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer, toast } from "react-toastify";
+import { Link } from "react-router-dom";
 
 class Courses extends React.Component {
   state = {
@@ -55,7 +56,9 @@ class Courses extends React.Component {
                 </button>
               </td>
               <td>{course.id}</td>
-              <td>{course.title}</td>
+              <td>
+                <Link to={"course/" + course.slug}>{course.title}</Link>
+              </td>
               <td>{course.category}</td>
             </tr>
           ))}
