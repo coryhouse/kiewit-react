@@ -53,13 +53,28 @@ const App = () => {
             loadCourses={loadCourses}
             deleteCourse={deleteCourse}
             courses={courses}
+            {...props}
           />
         )}
       />
       <Route
         path="/course"
         render={props => (
-          <ManageCourse loadCourses={loadCourses} courses={courses} />
+          <ManageCourse
+            {...props}
+            loadCourses={loadCourses}
+            courses={courses}
+          />
+        )}
+      />
+      <Route
+        path="/course/:slug"
+        render={props => (
+          <ManageCourse
+            {...props}
+            loadCourses={loadCourses}
+            courses={courses}
+          />
         )}
       />
     </>
