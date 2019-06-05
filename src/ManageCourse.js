@@ -22,7 +22,10 @@ class ManageCourse extends React.Component {
 
   handleChange = event => {
     const newCourse = { ...this.state.course };
-    newCourse[event.target.name] = event.target.value;
+    newCourse[event.target.name] =
+      event.target.name === "authorId"
+        ? parseInt(event.target.value, 10)
+        : event.target.value;
     this.setState({ course: newCourse });
   };
 
