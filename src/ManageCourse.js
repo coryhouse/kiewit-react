@@ -1,15 +1,15 @@
 import React from "react";
+import { saveCourse } from "./api/courseApi";
+import { Redirect } from "react-router-dom";
 
 class ManageCourse extends React.Component {
   state = {
     course: {
       title: "",
       authorId: null,
-      category: "",
-      author: {
-        name: "cory"
-      }
-    }
+      category: ""
+    },
+    redirectToCoursesPage: false
   };
 
   handleChange = event => {
@@ -27,11 +27,16 @@ class ManageCourse extends React.Component {
   //     this.setState({ course });
   //   };
 
-  handleSubmit(event) {
-    debugger;
-  }
+  handleSubmit = event => {
+    event.preventDefault(); // hey browser, don't post back.
+    saveCourse(this.state.course).then(() => {
+      this.setState({ redirectToCoursesPage: true });
+    });
+  };
 
   render() {
+    if (this.state.redirectToCoursesPage) return <Redirect to="courses" />;
+
     return (
       <>
         <h1>Manage Course</h1>
