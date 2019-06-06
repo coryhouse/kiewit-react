@@ -3,6 +3,7 @@ import { saveCourse } from "./api/courseApi";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { course } from "./propTypes";
+import { toast } from "react-toastify";
 
 class ManageCourse extends React.Component {
   state = {
@@ -14,10 +15,13 @@ class ManageCourse extends React.Component {
     redirectToCoursesPage: false
   };
 
-  componentDidMount() {
-    // 1. Read the URL
-    // 2. If the URL has a slug, we know we're editing.
-    // 3. Get the course info
+  async componentDidMount() {
+    const { slug } = this.props.match.params;
+    if (slug) {
+      if (this.props.courses.length === 0) await this.props.loadCourses();
+      const course = this.props.courses.find(course => course.slug === slug);
+      this.setState({ course });
+    }
   }
 
   handleChange = event => {
@@ -41,12 +45,15 @@ class ManageCourse extends React.Component {
   handleSubmit = event => {
     event.preventDefault(); // hey browser, don't post back.
     saveCourse(this.state.course).then(() => {
+      // load courses again so that the saved record is reflected on the courses page
+      this.props.loadCourses();
       this.setState({ redirectToCoursesPage: true });
+      toast.success("Course saved! 🎉");
     });
   };
 
   render() {
-    if (this.state.redirectToCoursesPage) return <Redirect to="courses" />;
+    if (this.state.redirectToCoursesPage) return <Redirect to="/courses" />;
 
     return (
       <>

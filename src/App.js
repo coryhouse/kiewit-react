@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import Home from "./Home";
 import Nav from "./Nav";
 import Courses from "./Courses";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import ManageCourse from "./ManageCourse";
 import * as courseApi from "./api/courseApi";
 import { ToastContainer, toast } from "react-toastify";
@@ -17,7 +17,7 @@ const App = () => {
   // const setCourses = courseState[1];
 
   function loadCourses() {
-    courseApi
+    return courseApi
       .getCourses()
       .then(courses => setCourses(courses))
       .catch(error =>
@@ -45,38 +45,40 @@ const App = () => {
     <>
       <ToastContainer />
       <Nav />
-      <Route path="/" component={Home} exact />
-      <Route
-        path="/courses"
-        render={props => (
-          <Courses
-            loadCourses={loadCourses}
-            deleteCourse={deleteCourse}
-            courses={courses}
-            {...props}
-          />
-        )}
-      />
-      <Route
-        path="/course"
-        render={props => (
-          <ManageCourse
-            {...props}
-            loadCourses={loadCourses}
-            courses={courses}
-          />
-        )}
-      />
-      <Route
-        path="/course/:slug"
-        render={props => (
-          <ManageCourse
-            {...props}
-            loadCourses={loadCourses}
-            courses={courses}
-          />
-        )}
-      />
+      <Switch>
+        <Route path="/" component={Home} exact />
+        <Route
+          path="/courses"
+          render={props => (
+            <Courses
+              loadCourses={loadCourses}
+              deleteCourse={deleteCourse}
+              courses={courses}
+              {...props}
+            />
+          )}
+        />
+        <Route
+          path="/course/:slug"
+          render={props => (
+            <ManageCourse
+              {...props}
+              loadCourses={loadCourses}
+              courses={courses}
+            />
+          )}
+        />
+        <Route
+          path="/course"
+          render={props => (
+            <ManageCourse
+              {...props}
+              loadCourses={loadCourses}
+              courses={courses}
+            />
+          )}
+        />
+      </Switch>
     </>
   );
 };
