@@ -1,105 +1,122 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { saveCourse } from "./api/courseApi";
 import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { course } from "./propTypes";
 import { toast } from "react-toastify";
 
-class ManageCourse extends React.Component {
-  state = {
-    course: {
-      title: "",
-      authorId: null,
-      category: ""
-    },
-    redirectToCoursesPage: false
-  };
+function ManageCourse({ courses, loadCourses, match }) {
+  const [course, setCourse] = useState({
+    title: "",
+    authorId: null,
+    category: ""
+  });
+  const [redirectToCoursesPage, setRedirectToCoursesPage] = useState(false);
 
-  async componentDidMount() {
-    const { slug } = this.props.match.params;
+  // useEffect(() => {
+  //   const effect = async () => {
+  //     const { slug } = match.params;
+  //     if (slug) {
+  //       if (courses.length === 0) await loadCourses();
+  //       const course = courses.find(course => course.slug === slug);
+  //       this.setState({ course });
+  //     }
+  //   };
+  //   effect();
+  // }, [courses, loadCourses, match.params]);
+
+  useEffect(() => {
+    const { slug } = match.params;
     if (slug) {
-      if (this.props.courses.length === 0) await this.props.loadCourses();
-      const course = this.props.courses.find(course => course.slug === slug);
-      this.setState({ course });
+      if (courses.length === 0) {
+        loadCourses().then(_courses => {
+          setCourse(getCourseBySlug(_courses, slug));
+        });
+      } else {
+        setCourse(getCourseBySlug(courses, slug));
+      }
     }
-  }
 
-  handleChange = event => {
-    const newCourse = { ...this.state.course };
+    function getCourseBySlug(courses, slug) {
+      const course = courses.find(course => course.slug === slug);
+      return course;
+    }
+  }, [courses, loadCourses, match.params]);
+
+  function handleChange(event) {
+    const newCourse = { ...course };
     newCourse[event.target.name] =
       event.target.name === "authorId"
         ? parseInt(event.target.value, 10)
         : event.target.value;
-    this.setState({ course: newCourse });
-  };
+    setCourse(newCourse);
+  }
 
   // Hipster.js
   //   handleChange = ({ target }) => {
   //     const course = {
-  //       ...this.state.course,
+  //       ...course,
   //       [target.name]: target.value
   //     };
-  //     this.setState({ course });
+  //     setCourse({ course });
   //   };
 
-  handleSubmit = event => {
+  function handleSubmit(event) {
     event.preventDefault(); // hey browser, don't post back.
-    saveCourse(this.state.course).then(() => {
+    saveCourse(course).then(() => {
       // load courses again so that the saved record is reflected on the courses page
-      this.props.loadCourses();
-      this.setState({ redirectToCoursesPage: true });
+      loadCourses();
+      setRedirectToCoursesPage(true);
       toast.success("Course saved! 🎉");
     });
-  };
-
-  render() {
-    if (this.state.redirectToCoursesPage) return <Redirect to="/courses" />;
-
-    return (
-      <>
-        <h1>Manage Course</h1>
-        <form onSubmit={this.handleSubmit}>
-          <div>
-            <label htmlFor="title">Title</label>
-            <br />
-            <input
-              id="title"
-              type="text"
-              name="title"
-              onChange={this.handleChange}
-              value={this.state.course.title}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="authorId">Author Id</label>
-            <br />
-            <input
-              id="authorId"
-              type="text"
-              name="authorId"
-              onChange={this.handleChange}
-              value={this.state.course.authorId || ""}
-            />
-          </div>
-
-          <div>
-            <label htmlFor="category">Category</label>
-            <br />
-            <input
-              id="category"
-              type="text"
-              name="category"
-              onChange={this.handleChange}
-              value={this.state.course.category}
-            />
-          </div>
-
-          <input type="submit" className="btn btn-primary" value="Save" />
-        </form>
-      </>
-    );
   }
+
+  if (redirectToCoursesPage) return <Redirect to="/courses" />;
+
+  return (
+    <>
+      <h1>Manage Course</h1>
+      <form onSubmit={handleSubmit}>
+        <div>
+          <label htmlFor="title">Title</label>
+          <br />
+          <input
+            id="title"
+            type="text"
+            name="title"
+            onChange={handleChange}
+            value={course.title}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="authorId">Author Id</label>
+          <br />
+          <input
+            id="authorId"
+            type="text"
+            name="authorId"
+            onChange={handleChange}
+            value={course.authorId || ""}
+          />
+        </div>
+
+        <div>
+          <label htmlFor="category">Category</label>
+          <br />
+          <input
+            id="category"
+            type="text"
+            name="category"
+            onChange={handleChange}
+            value={course.category}
+          />
+        </div>
+
+        <input type="submit" className="btn btn-primary" value="Save" />
+      </form>
+    </>
+  );
 }
 
 ManageCourse.propTypes = {
