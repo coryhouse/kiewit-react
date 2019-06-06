@@ -59,17 +59,7 @@ const App = () => {
           )}
         />
         <Route
-          path="/course/:slug"
-          render={props => (
-            <ManageCourse
-              {...props}
-              loadCourses={loadCourses}
-              courses={courses}
-            />
-          )}
-        />
-        <Route
-          path="/course"
+          path="/course/:slug?"
           render={props => (
             <ManageCourse
               {...props}
