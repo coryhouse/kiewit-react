@@ -8,6 +8,7 @@ import * as courseApi from "./api/courseApi";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContext from "./UserContext";
+import PageNotFound from "./PageNotFound";
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -76,6 +77,8 @@ const App = () => {
             />
           )}
         />
+        <Route path="/404" component={PageNotFound} />
+        <Route component={PageNotFound} />
       </Switch>
     </UserContext.Provider>
   );

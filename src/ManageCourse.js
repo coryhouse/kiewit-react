@@ -13,40 +13,43 @@ function getCourseBySlug(courses, slug) {
   return course;
 }
 
-function ManageCourse({ courses, loadCourses, match }) {
+function ManageCourse({ courses, loadCourses, match, history }) {
   const [course, setCourse] = useState({
     title: "",
     authorId: null,
     category: ""
   });
+  const [errors, setErrors] = useState({});
   const [redirectToCoursesPage, setRedirectToCoursesPage] = useState(false);
 
-  useEffect(() => {
-    async function loadCourseData() {
-      const { slug } = match.params;
-      if (courses.length === 0) {
-        const _courses = await loadCourses();
-        setCourse(getCourseBySlug(_courses, slug));
-      } else {
-        setCourse(getCourseBySlug(courses, slug));
-      }
-    }
-    loadCourseData();
-  }, [courses, loadCourses, match.params]);
-
-  // Promises version of above
   // useEffect(() => {
-  //   const { slug } = match.params;
-  //   if (slug) {
+  //   async function loadCourseData() {
+  //     const { slug } = match.params;
   //     if (courses.length === 0) {
-  //       loadCourses().then(_courses => {
-  //         setCourse(getCourseBySlug(_courses, slug));
-  //       });
+  //       const _courses = await loadCourses();
+  //       setCourse(getCourseBySlug(_courses, slug));
   //     } else {
   //       setCourse(getCourseBySlug(courses, slug));
   //     }
   //   }
+  //   loadCourseData();
   // }, [courses, loadCourses, match.params]);
+
+  // Promises version of above
+  useEffect(() => {
+    const { slug } = match.params;
+    if (slug) {
+      if (courses.length === 0) {
+        loadCourses().then(_courses => {
+          const course = getCourseBySlug(_courses, slug);
+          course ? setCourse(course) : history.push("/404");
+        });
+      } else {
+        const course = getCourseBySlug(courses, slug);
+        course ? setCourse(course) : history.push("/404");
+      }
+    }
+  }, [courses, history, loadCourses, match.params]);
 
   function handleChange(event) {
     const newCourse = { ...course };
@@ -66,8 +69,20 @@ function ManageCourse({ courses, loadCourses, match }) {
   //     setCourse({ course });
   //   };
 
+  function isValid() {
+    const _errors = {};
+    if (!course.title) _errors.title = "Title required.";
+    if (!course.authorId) _errors.authorId = "Author Id required.";
+    if (!course.category) _errors.category = "Category required.";
+
+    // if errors is still an empty object, then return true.
+    setErrors(_errors);
+    return Object.keys(_errors).length === 0;
+  }
+
   function handleSubmit(event) {
     event.preventDefault(); // hey browser, don't post back.
+    if (!isValid()) return;
     saveCourse(course).then(() => {
       // load courses again so that the saved record is reflected on the courses page
       loadCourses();
@@ -88,22 +103,27 @@ function ManageCourse({ courses, loadCourses, match }) {
           name="title"
           onChange={handleChange}
           value={course.title}
+          error={errors.title}
         />
 
         <TextInput
           title="Author Id"
           id="authorId"
+          label="Author ID"
           name="authorId"
           onChange={handleChange}
           value={course.authorId || ""}
+          error={errors.authorId}
         />
 
         <TextInput
           title="category"
           id="category"
+          label="Category"
           name="category"
           onChange={handleChange}
           value={course.category}
+          error={errors.category}
         />
 
         <input type="submit" className="btn btn-primary" value="Save" />
