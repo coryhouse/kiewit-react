@@ -4,7 +4,14 @@ import { Redirect } from "react-router-dom";
 import PropTypes from "prop-types";
 import { course } from "./propTypes";
 import { toast } from "react-toastify";
-import TextInput from "./shared/TextInput";
+import TextInput from "./shared/TextInput/TextInput";
+
+// Hoist funcs that don't need props or state outside of your functions.
+// https://overreacted.io/a-complete-guide-to-useeffect/#tldr
+function getCourseBySlug(courses, slug) {
+  const course = courses.find(course => course.slug === slug);
+  return course;
+}
 
 function ManageCourse({ courses, loadCourses, match }) {
   const [course, setCourse] = useState({
@@ -14,35 +21,32 @@ function ManageCourse({ courses, loadCourses, match }) {
   });
   const [redirectToCoursesPage, setRedirectToCoursesPage] = useState(false);
 
-  // useEffect(() => {
-  //   const effect = async () => {
-  //     const { slug } = match.params;
-  //     if (slug) {
-  //       if (courses.length === 0) await loadCourses();
-  //       const course = courses.find(course => course.slug === slug);
-  //       this.setState({ course });
-  //     }
-  //   };
-  //   effect();
-  // }, [courses, loadCourses, match.params]);
-
   useEffect(() => {
-    const { slug } = match.params;
-    if (slug) {
+    async function loadCourseData() {
+      const { slug } = match.params;
       if (courses.length === 0) {
-        loadCourses().then(_courses => {
-          setCourse(getCourseBySlug(_courses, slug));
-        });
+        const _courses = await loadCourses();
+        setCourse(getCourseBySlug(_courses, slug));
       } else {
         setCourse(getCourseBySlug(courses, slug));
       }
     }
-
-    function getCourseBySlug(courses, slug) {
-      const course = courses.find(course => course.slug === slug);
-      return course;
-    }
+    loadCourseData();
   }, [courses, loadCourses, match.params]);
+
+  // Promises version of above
+  // useEffect(() => {
+  //   const { slug } = match.params;
+  //   if (slug) {
+  //     if (courses.length === 0) {
+  //       loadCourses().then(_courses => {
+  //         setCourse(getCourseBySlug(_courses, slug));
+  //       });
+  //     } else {
+  //       setCourse(getCourseBySlug(courses, slug));
+  //     }
+  //   }
+  // }, [courses, loadCourses, match.params]);
 
   function handleChange(event) {
     const newCourse = { ...course };
