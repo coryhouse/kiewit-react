@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import PropTypes from "prop-types";
 import { course } from "./propTypes";
 import { Link } from "react-router-dom";
+import Spinner from "./shared/Spinner/Spinner";
 
 function Courses({ courses, loadCourses, deleteCourse }) {
   useEffect(() => {
@@ -16,30 +17,35 @@ function Courses({ courses, loadCourses, deleteCourse }) {
       <Link to="course" className="btn btn-primary">
         Add Course
       </Link>
-      <table className="table">
-        <thead>
-          <tr>
-            <th />
-            <th>ID</th>
-            <th>Title</th>
-            <th>Category</th>
-          </tr>
-        </thead>
-        <tbody>
-          {courses.map(course => (
-            <tr key={course.id}>
-              <td>
-                <button onClick={() => deleteCourse(course.id)}>Delete</button>
-              </td>
-              <td>{course.id}</td>
-              <td>
-                <Link to={"course/" + course.slug}>{course.title}</Link>
-              </td>
-              <td>{course.category}</td>
+      {courses.length === 0 && <Spinner />}
+      {courses.length > 0 && (
+        <table className="table">
+          <thead>
+            <tr>
+              <th />
+              <th>ID</th>
+              <th>Title</th>
+              <th>Category</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {courses.map(course => (
+              <tr key={course.id}>
+                <td>
+                  <button onClick={() => deleteCourse(course.id)}>
+                    Delete
+                  </button>
+                </td>
+                <td>{course.id}</td>
+                <td>
+                  <Link to={"course/" + course.slug}>{course.title}</Link>
+                </td>
+                <td>{course.category}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      )}
     </>
   );
 }

@@ -5,6 +5,7 @@ import PropTypes from "prop-types";
 import { course } from "./propTypes";
 import { toast } from "react-toastify";
 import TextInput from "./shared/TextInput/TextInput";
+import Spinner from "./shared/Spinner";
 
 // Hoist funcs that don't need props or state outside of your functions.
 // https://overreacted.io/a-complete-guide-to-useeffect/#tldr
@@ -19,6 +20,7 @@ function ManageCourse({ courses, loadCourses, match, history }) {
     authorId: null,
     category: ""
   });
+  const [isLoading, setIsLoading] = useState(true);
   const [errors, setErrors] = useState({});
   const [redirectToCoursesPage, setRedirectToCoursesPage] = useState(false);
 
@@ -43,11 +45,15 @@ function ManageCourse({ courses, loadCourses, match, history }) {
         loadCourses().then(_courses => {
           const course = getCourseBySlug(_courses, slug);
           course ? setCourse(course) : history.push("/404");
+          setIsLoading(false);
         });
       } else {
         const course = getCourseBySlug(courses, slug);
         course ? setCourse(course) : history.push("/404");
+        setIsLoading(false);
       }
+    } else {
+      setIsLoading(false);
     }
   }, [courses, history, loadCourses, match.params]);
 
@@ -92,6 +98,7 @@ function ManageCourse({ courses, loadCourses, match, history }) {
   }
 
   if (redirectToCoursesPage) return <Redirect to="/courses" />;
+  if (isLoading) return <Spinner />;
 
   return (
     <>

@@ -39,9 +39,10 @@ const App = () => {
 
   async function deleteCourse(courseId) {
     try {
-      await courseApi.deleteCourse(courseId);
+      // Optimistic delete.
       setCourses(courses.filter(course => course.id !== courseId));
       toast.success("🦄🦄Course deleted.");
+      await courseApi.deleteCourse(courseId);
     } catch (error) {
       toast.error(
         "🦄 Sorry, delete failed. Please reload and try again. Error: " +
