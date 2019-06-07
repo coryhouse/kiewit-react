@@ -14,7 +14,11 @@ const TextInput = ({ id, label, name, onChange, value, error }) => {
         onChange={onChange}
         value={value}
       />
-      {error && <div className="alert alert-danger">{error}</div>}
+      {error && (
+        <div role="alert" className="alert alert-danger">
+          {error}
+        </div>
+      )}
     </div>
   );
 };
