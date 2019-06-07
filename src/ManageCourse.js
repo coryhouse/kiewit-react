@@ -6,6 +6,7 @@ import { course } from "./propTypes";
 import { toast } from "react-toastify";
 import TextInput from "./shared/TextInput/TextInput";
 import Spinner from "./shared/Spinner";
+import SubmitButton from "./shared/SubmitButton";
 
 // Hoist funcs that don't need props or state outside of your functions.
 // https://overreacted.io/a-complete-guide-to-useeffect/#tldr
@@ -21,6 +22,7 @@ function ManageCourse({ courses, loadCourses, match, history }) {
     category: ""
   });
   const [isLoading, setIsLoading] = useState(true);
+  const [formSubmitted, setFormSubmitted] = useState(false);
   const [errors, setErrors] = useState({});
   const [redirectToCoursesPage, setRedirectToCoursesPage] = useState(false);
 
@@ -89,6 +91,7 @@ function ManageCourse({ courses, loadCourses, match, history }) {
   function handleSubmit(event) {
     event.preventDefault(); // hey browser, don't post back.
     if (!isValid()) return;
+    setFormSubmitted(true);
     saveCourse(course).then(() => {
       // load courses again so that the saved record is reflected on the courses page
       loadCourses();
@@ -133,7 +136,7 @@ function ManageCourse({ courses, loadCourses, match, history }) {
           error={errors.category}
         />
 
-        <input type="submit" className="btn btn-primary" value="Save" />
+        <SubmitButton value="Save" isLoading={formSubmitted} />
       </form>
     </>
   );

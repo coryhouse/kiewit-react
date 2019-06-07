@@ -1,7 +1,6 @@
-import React, { useState } from "react";
+import React, { useState, Suspense } from "react";
 import Home from "./Home";
 import Nav from "./Nav";
-import Courses from "./Courses";
 import { Route, Switch } from "react-router-dom";
 import ManageCourse from "./ManageCourse";
 import * as courseApi from "./api/courseApi";
@@ -9,6 +8,10 @@ import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import UserContext from "./UserContext";
 import PageNotFound from "./PageNotFound";
+import Spinner from "./shared/Spinner";
+
+// Lazy import
+const Courses = React.lazy(() => import("./Courses"));
 
 const App = () => {
   const [courses, setCourses] = useState([]);
@@ -55,32 +58,34 @@ const App = () => {
     <UserContext.Provider value={userState}>
       <ToastContainer />
       <Nav />
-      <Switch>
-        <Route path="/" component={Home} exact />
-        <Route
-          path="/courses"
-          render={props => (
-            <Courses
-              loadCourses={loadCourses}
-              deleteCourse={deleteCourse}
-              courses={courses}
-              {...props}
-            />
-          )}
-        />
-        <Route
-          path="/course/:slug?"
-          render={props => (
-            <ManageCourse
-              {...props}
-              loadCourses={loadCourses}
-              courses={courses}
-            />
-          )}
-        />
-        <Route path="/404" component={PageNotFound} />
-        <Route component={PageNotFound} />
-      </Switch>
+      <Suspense fallback={Spinner}>
+        <Switch>
+          <Route path="/" component={Home} exact />
+          <Route
+            path="/courses"
+            render={props => (
+              <Courses
+                loadCourses={loadCourses}
+                deleteCourse={deleteCourse}
+                courses={courses}
+                {...props}
+              />
+            )}
+          />
+          <Route
+            path="/course/:slug?"
+            render={props => (
+              <ManageCourse
+                {...props}
+                loadCourses={loadCourses}
+                courses={courses}
+              />
+            )}
+          />
+          <Route path="/404" component={PageNotFound} />
+          <Route component={PageNotFound} />
+        </Switch>
+      </Suspense>
     </UserContext.Provider>
   );
 };
